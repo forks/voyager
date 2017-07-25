@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | User config
@@ -14,7 +13,6 @@ return [
     'user' => [
         'add_default_role_on_register' => true,
         'default_role'                 => 'user',
-        'admin_permission'             => 'browse_admin',
         'namespace'                    => App\User::class,
         'default_avatar'               => 'users/default.png',
     ],
@@ -68,8 +66,19 @@ return [
     */
 
     'storage' => [
-        'subfolder' => 'public/', // include trailing slash, like 'my_folder/'
+        'disk' => 'public',
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Media Manager
+    |--------------------------------------------------------------------------
+    |
+    | Here you can specify if media manager can show hidden files like(.gitignore)
+    |
+    */
+
+    'hidden_files' => false,
 
     /*
     |--------------------------------------------------------------------------
@@ -82,7 +91,49 @@ return [
 
     'database' => [
         'tables' => [
-            'hidden' => [], // database tables that are hidden from the admin panel
+            'hidden' => ['migrations', 'data_rows', 'data_types', 'menu_items', 'password_resets', 'permission_role', 'permissions', 'settings'],
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | The prefix you wish to use with your voyager installation
+    |--------------------------------------------------------------------------
+    |
+    | specify the domain prefix you would like your users to visit in order
+    | to view the Voyager admin panel
+    |
+    */
+
+    'prefix' => 'admin',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Multilingual configuration
+    |--------------------------------------------------------------------------
+    |
+    | Here you can specify if you want Voyager to ship with support for
+    | multilingual and what locales are enabled.
+    |
+    */
+
+    'multilingual' => [
+        /*
+         * Set whether or not the multilingual is supported by the BREAD input.
+         */
+        'enabled' => false,
+
+        /*
+         * Select default language
+         */
+        'default' => 'en',
+
+        /*
+         * Select languages that are supported.
+         */
+        'locales' => [
+            'en',
+            //'pt',
         ],
     ],
 
@@ -136,11 +187,56 @@ return [
                 'classes'       => 'class-full-of-rum',
                 'icon_class'    => 'voyager-person',
             ],
-            'Visit site' => [
-                'route'         => '/home',
+            'Home' => [
+                'route'         => '/',
+                'icon_class'    => 'voyager-home',
                 'target_blank'  => true,
             ],
+            'Logout' => [
+                'route'      => 'voyager.logout',
+                'icon_class' => 'voyager-power',
+            ],
         ],
+
+        'data_tables' => [
+            'responsive' => true, // Use responsive extension for jQuery dataTables that are not server-side paginated
+        ],
+
+        'widgets' => [
+            'TCG\\Voyager\\Widgets\\UserDimmer',
+            'TCG\\Voyager\\Widgets\\PostDimmer',
+            'TCG\\Voyager\\Widgets\\PageDimmer',
+        ],
+
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | UI Generic Config
+    |--------------------------------------------------------------------------
+    |
+    | Here you change some of the Voyager UI settings.
+    |
+    | TODO: Move style properties to assets/css
+    |
+    */
+
+    'login' => [
+        'gradient_a' => '#ffffff',
+        'gradient_b' => '#ffffff',
+    ],
+
+    'primary_color' => '#22A7F0',
+
+    'show_dev_tips' => true, // Show development tip "How To Use:" in Menu and Settings
+
+    // Here you can specify additional assets you would like to be included in the master.blade
+    'additional_css' => [
+        //'css/custom.css',
+    ],
+
+    'additional_js' => [
+        //'js/custom.js',
     ],
 
 ];

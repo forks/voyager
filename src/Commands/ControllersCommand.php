@@ -2,15 +2,12 @@
 
 namespace TCG\Voyager\Commands;
 
-use Illuminate\Console\AppNamespaceDetectorTrait;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Symfony\Component\Console\Input\InputOption;
 
 class ControllersCommand extends Command
 {
-    use AppNamespaceDetectorTrait;
-
     /**
      * The console command name.
      *
@@ -62,27 +59,27 @@ class ControllersCommand extends Command
         $files = $this->filesystem->files(base_path('vendor/tcg/voyager/src/Http/Controllers'));
         $namespace = config('voyager.controllers.namespace', 'TCG\\Voyager\\Http\\Controllers');
 
-        $appNamespace = $this->getAppNamespace();
+        $appNamespace = app()->getNamespace();
 
         if (!starts_with($namespace, $appNamespace)) {
-            return $this->error('The controllers namespace start must the your application namespace.');
+            return $this->error('The controllers namespace must start with your application namespace: '.$appNamespace);
         }
 
-        $location = str_replace('\\', '/', substr($namespace, strlen($appNamespace)));
+        $location = str_replace('\\', DIRECTORY_SEPARATOR, substr($namespace, strlen($appNamespace)));
 
         if (!$this->filesystem->isDirectory(app_path($location))) {
             $this->filesystem->makeDirectory(app_path($location));
         }
 
         foreach ($files as $file) {
-            $parts = explode('/', $file);
+            $parts = explode(DIRECTORY_SEPARATOR, $file);
             $filename = end($parts);
 
             if ($filename == 'Controller.php') {
                 continue;
             }
 
-            $path = app_path($location.'/'.$filename);
+            $path = app_path($location.DIRECTORY_SEPARATOR.$filename);
 
             if (!$this->filesystem->exists($path) or $this->option('force')) {
                 $class = substr($filename, 0, strpos($filename, '.'));

@@ -8,20 +8,20 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Intervention\Image\Constraint;
 use Intervention\Image\Facades\Image;
-use TCG\Voyager\Voyager;
+use TCG\Voyager\Facades\Voyager;
 
 class VoyagerController extends Controller
 {
     public function index()
     {
-        return view('voyager::index');
+        return Voyager::view('voyager::index');
     }
 
     public function logout()
     {
         Auth::logout();
 
-        return redirect()->route('voyager.logout');
+        return redirect()->route('voyager.login');
     }
 
     public function upload(Request $request)
@@ -45,14 +45,14 @@ class VoyagerController extends Controller
                 ->encode($file->getClientOriginalExtension(), 75);
 
             // move uploaded file from temp to uploads directory
-            if (Storage::put(config('voyager.storage.subfolder').$fullPath, (string) $image, 'public')) {
-                $status = 'Image successfully uploaded!';
+            if (Storage::disk(config('voyager.storage.disk'))->put($fullPath, (string) $image, 'public')) {
+                $status = __('voyager.media.success_uploading');
                 $fullFilename = $fullPath;
             } else {
-                $status = 'Upload Fail: Unknown error occurred!';
+                $status = __('voyager.media.error_uploading');
             }
         } else {
-            $status = 'Upload Fail: Unsupported file format or It is too large to upload!';
+            $status = __('voyager.media.uploading_wrong_type');
         }
 
         // echo out script that TinyMCE can handle and update the image in the editor
@@ -61,6 +61,6 @@ class VoyagerController extends Controller
 
     public function profile()
     {
-        return view('voyager::profile');
+        return Voyager::view('voyager::profile');
     }
 }

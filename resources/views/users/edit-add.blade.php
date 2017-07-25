@@ -1,12 +1,15 @@
 @extends('voyager::master')
 
+@section('page_title', __('voyager.generic.'.(isset($dataTypeContent->id) ? 'edit' : 'add')).' '.$dataType->display_name_singular)
+
 @section('css')
     <meta name="csrf-token" content="{{ csrf_token() }}">
 @stop
 
 @section('page_header')
     <h1 class="page-title">
-        <i class="{{ $dataType->icon }}"></i> @if(isset($dataTypeContent->id)){{ 'Edit' }}@else{{ 'New' }}@endif {{ $dataType->display_name_singular }}
+        <i class="{{ $dataType->icon }}"></i>
+        {{ __('voyager.generic.'.(isset($dataTypeContent->id) ? 'edit' : 'add')).' '.$dataType->display_name_singular }}
     </h1>
 @stop
 
@@ -16,13 +19,8 @@
             <div class="col-md-12">
 
                 <div class="panel panel-bordered">
-
-                    <div class="panel-heading">
-                        <h3 class="panel-title">@if(isset($dataTypeContent->id)){{ 'Edit' }}@else{{ 'Add New' }}@endif {{ $dataType->display_name_singular }}</h3>
-                    </div>
-                    <!-- /.box-header -->
                     <!-- form start -->
-                    <form role="form"
+                    <form class="form-edit-add" role="form"
                           action="@if(isset($dataTypeContent->id)){{ route('voyager.'.$dataType->slug.'.update', $dataTypeContent->id) }}@else{{ route('voyager.'.$dataType->slug.'.store') }}@endif"
                           method="POST" enctype="multipart/form-data">
                         <!-- PUT Method if we are editing -->
@@ -34,44 +32,33 @@
                         {{ csrf_field() }}
 
                         <div class="panel-body">
-
-                            @if (count($errors) > 0)
-                                <div class="alert alert-danger">
-                                    <ul>
-                                        @foreach ($errors->all() as $error)
-                                            <li>{{ $error }}</li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            @endif
-
                             <div class="form-group">
-                                <label for="name">Name</label>
+                                <label for="name">{{ __('voyager.generic.name') }}</label>
                                 <input type="text" class="form-control" name="name"
-                                    placeholder="Name" id="name"
+                                    placeholder="{{ __('voyager.generic.name') }}" id="name"
                                     value="@if(isset($dataTypeContent->name)){{ old('name', $dataTypeContent->name) }}@else{{old('name')}}@endif">
                             </div>
 
                             <div class="form-group">
-                                <label for="name">Email</label>
+                                <label for="name">{{ __('voyager.generic.email') }}</label>
                                 <input type="text" class="form-control" name="email"
-                                       placeholder="Email" id="email"
+                                       placeholder="{{ __('voyager.generic.email') }}" id="email"
                                        value="@if(isset($dataTypeContent->email)){{ old('email', $dataTypeContent->email) }}@else{{old('email')}}@endif">
                             </div>
 
                             <div class="form-group">
-                                <label for="password">Password</label>
+                                <label for="password">{{ __('voyager.profile.password') }}</label>
                                 @if(isset($dataTypeContent->password))
                                     <br>
-                                    <small>Leave empty to keep the same</small>
+                                    <small>{{ __('voyager.profile.password_hint') }}</small>
                                 @endif
                                 <input type="password" class="form-control" name="password"
-                                       placeholder="Password" id="password"
+                                       placeholder="{{ __('voyager.profile.password') }}" id="password"
                                        value="">
                             </div>
 
                             <div class="form-group">
-                                <label for="password">Avatar</label>
+                                <label for="password">{{ __('voyager.profile.avatar') }}</label>
                                 @if(isset($dataTypeContent->avatar))
                                     <img src="{{ Voyager::image( $dataTypeContent->avatar ) }}"
                                          style="width:200px; height:auto; clear:both; display:block; padding:2px; border:1px solid #ddd; margin-bottom:10px;">
@@ -80,7 +67,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="role">User Role</label>
+                                <label for="role">{{ __('voyager.profile.user_role') }}</label>
                                 <select name="role_id" id="role" class="form-control">
                                     <?php $roles = TCG\Voyager\Models\Role::all(); ?>
                                     @foreach($roles as $role)
@@ -94,7 +81,7 @@
                         </div><!-- panel-body -->
 
                         <div class="panel-footer">
-                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button type="submit" class="btn btn-primary">{{ __('voyager.generic.submit') }}</button>
                         </div>
                     </form>
 
@@ -119,6 +106,6 @@
             $('.toggleswitch').bootstrapToggle();
         });
     </script>
-    <script src="{{ config('voyager.assets_path') }}/lib/js/tinymce/tinymce.min.js"></script>
-    <script src="{{ config('voyager.assets_path') }}/js/voyager_tinymce.js"></script>
+    <script src="{{ voyager_asset('lib/js/tinymce/tinymce.min.js') }}"></script>
+    <script src="{{ voyager_asset('js/voyager_tinymce.js') }}"></script>
 @stop
